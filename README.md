@@ -15,5 +15,5 @@ Getting started
 Install this app using ``easy_install`` or ``pip``, and enable it by adding
 the following line to your ``settings.py`` file:
 
-    AUTHENTICATION_BACKENDS = ('myapp.auth.Sha256Backend',)
+    AUTHENTICATION_BACKENDS = ('django_sha256.auth.Sha256Backend',)
 
