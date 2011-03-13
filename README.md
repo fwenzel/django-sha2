@@ -78,7 +78,7 @@ running ``syncdb`` for the first time.
 History
 -------
 This started off as a monkey-patch for SHA-256 in Django and, over SHA-512,
-turned into a stron hash library featuring bcrypt and hmac support.
+turned into a strong hash library featuring bcrypt and hmac support.
 
 For the initial idea, read the [blog post][blog] about it.
 
