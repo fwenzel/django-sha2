@@ -30,10 +30,10 @@ def check_password(db_entry, raw_pass):
         print('Invalid shared key version "{0}"'.format(key_ver))
         return False
 
-
     bc_value = algo_and_hash[6:]  # Yes, bcrypt <3s the leading $.
     hmac_value = _hmac_create(raw_pass, shared_key)
     return _bcrypt_verify(hmac_value, bc_value)
+
 
 def _hmac_create(userpwd, shared_key):
     """Create HMAC value based on pwd and system-local and per-user salt."""
