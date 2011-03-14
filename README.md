@@ -12,8 +12,15 @@ the following line to your ``settings.py`` file:
 
     AUTHENTICATION_BACKENDS = ('django_sha2.auth.BcBackend',)
     BCRYPT_ROUNDS = 12  # optional. 12 is the default.
+    INSTALLED_APPS = (
+        # ...
+        'django.contrib.auth',
+        'django_sha2',  # Load after auth to monkey-patch it.
+        # ...
+    )
 
-Add the following to your ``settings_local.py`` file, and keep it secret:
+Add something like the following to your ``settings_local.py`` file, and keep
+it secret:
 
     HMAC_KEYS = {
         '2011-01-01': 'ThisisASharedKey',
@@ -24,6 +31,11 @@ Add the following to your ``settings_local.py`` file, and keep it secret:
 ``HMAC_KEYS`` is a dictionary ``{key-id: shared-secret}``. You only need one
 key to start. The dictionary key can be an ISO date, or almost anything else,
 but the latest key will be determined by sorting.
+
+**Note:** If you don't have a ``settings_local.py`` file or similar, make sure
+to use ``from settings_local import *`` at the end of ``settings.py`` and add
+it to the ignore file for your version control system, so it becomes part of
+your Django settings, but is not committed to the repository.
 
 This change is backwards-compatible (i.e., existing SHA-1 hashes in the
 database keep on working), and does not require database changes\*.
