@@ -15,12 +15,13 @@ DATABASES = {
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'django_sha2',
     'django.contrib.contenttypes',
     'django_nose',
 )
 
 ## django-sha2 settings
-AUTHENTICATION_BACKENDS = ('django_sha2.auth.BcBackend',)
+PWD_ALGORITHM = 'bcrypt'
 HMAC_KEYS = {
     '2011-01-01': 'ThisisASharedKey',
     '2010-06-01': 'OldSharedKey',

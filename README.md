@@ -10,14 +10,14 @@ Getting started
 Install this app using ``easy_install`` or ``pip``, and enable it by adding
 the following line to your ``settings.py`` file:
 
-    AUTHENTICATION_BACKENDS = ('django_sha2.auth.BcBackend',)
-    BCRYPT_ROUNDS = 12  # optional. 12 is the default.
     INSTALLED_APPS = (
         # ...
         'django.contrib.auth',
         'django_sha2',  # Load after auth to monkey-patch it.
         # ...
     )
+    PWD_ALGORITHM = 'bcrypt'  # one of: bcrypt, sha512, sha512b64, sha256
+    BCRYPT_ROUNDS = 12  # optional. 12 is the default. Only needed for bcrypt.
 
 Add something like the following to your ``settings_local.py`` file, and keep
 it secret:
@@ -72,13 +72,13 @@ A note on SHA-512
 Django's default password field is limited to 128 characters, which does not
 fit a hex-encoded SHA512 hash. In order to not require a database migration
 for every project that uses this, we encode the SHA512 hash in Base 64 as
-opposed to hex. To use this, set your authentication backend as follows:
+opposed to hex. To use this, set your hash backend as follows:
 
-    AUTHENTICATION_BACKENDS = ('django_sha2.auth.Sha512Base64Backend',)
+    PWD_ALGORITHM = 'sha512b64'
 
 If you want to use hex-encoded SHA512 instead, use the following:
 
-    AUTHENTICATION_BACKENDS = ('django_sha2.auth.Sha512Backend',)
+    PWD_ALGORITHM = 'sha512'
 
 Be advised, however, that you need to ensure your database's password field can
 hold at least 156 characters.

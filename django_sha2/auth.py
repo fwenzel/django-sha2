@@ -14,17 +14,13 @@ import os
 from django.conf import settings
 from django.contrib.auth import models as auth_models
 
-from django_sha2.backends import *
 
-
-BACKENDS = {
-    'BcBackend': 'bcrypt',
-    'Sha256Backend': 'sha256',
-    'Sha512Backend': 'sha512',
-    'Sha512Base64Backend': 'sha512b64',
-}
-
-__all__ = (locals()[k] for k in BACKENDS.keys())
+ALGOS = (
+    'bcrypt',
+    'sha256',
+    'sha512',
+    'sha512b64',
+)
 
 
 def monkeypatch():
@@ -32,18 +28,9 @@ def monkeypatch():
     Monkeypatch authentication backend if one of our backends was selected.
     """
 
-    if not getattr(settings, 'AUTHENTICATION_BACKENDS'):
-        return
-
-    algo = ''
-    for backend in BACKENDS:
-        if (('django_sha2.auth.%s' % backend) in
-            settings.AUTHENTICATION_BACKENDS):
-            algo = BACKENDS[backend]
-            break
-
-    if not algo:
-        return
+    algo = getattr(settings, 'PWD_ALGORITHM', 'bcrypt')
+    if not algo in ALGOS:
+        return  # TODO: log a warning?
 
     # max_length for SHA512 must be at least 156 characters. NB: The DB needs
     # to be fixed separately.
