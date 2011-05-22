@@ -44,6 +44,9 @@ def monkeypatch():
 
 
     def set_password(self, raw_password):
+        if raw_password is None:
+            self.set_unusable_password()
+            return
         if algo != 'bcrypt':
             salt = os.urandom(10).encode('hex')  # Random, 20-digit (hex) salt.
             hsh = get_hexdigest(algo, salt, raw_password)
