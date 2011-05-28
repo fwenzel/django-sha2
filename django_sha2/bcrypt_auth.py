@@ -46,7 +46,7 @@ def _bcrypt_create(hmac_value):
     """Create bcrypt hash."""
     rounds = getattr(settings, 'BCRYPT_ROUNDS', 12)
     # No need for us to create a user salt, bcrypt creates its own.
-    bcrypt_value = bcrypt.hashpw(hmac_value, bcrypt.gensalt(rounds))
+    bcrypt_value = bcrypt.hashpw(hmac_value, bcrypt.gensalt(int(rounds)))
     return bcrypt_value
 
 
