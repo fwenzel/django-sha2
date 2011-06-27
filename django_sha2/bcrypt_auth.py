@@ -6,6 +6,7 @@ import bcrypt
 import hmac
 
 from django.conf import settings
+from django.utils.encoding import smart_str
 
 
 def create_hash(userpwd):
@@ -38,7 +39,7 @@ def check_password(db_entry, raw_pass):
 def _hmac_create(userpwd, shared_key):
     """Create HMAC value based on pwd and system-local and per-user salt."""
     hmac_value = base64.b64encode(hmac.new(
-        shared_key, userpwd, hashlib.sha512).digest())
+        smart_str(shared_key), smart_str(userpwd), hashlib.sha512).digest())
     return hmac_value
 
 
