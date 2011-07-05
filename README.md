@@ -8,7 +8,7 @@ Getting started
 ---------------
 
 Install this app using ``easy_install`` or ``pip``, and enable it by adding
-the following line to your ``settings.py`` file:
+the following to your ``settings.py`` file:
 
     INSTALLED_APPS = (
         # ...
