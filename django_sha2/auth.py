@@ -44,6 +44,7 @@ def monkeypatch():
 
 
     def set_password(self, raw_password):
+        """Wrapper to set strongly hashed password for Django."""
         if raw_password is None:
             self.set_unusable_password()
             return
@@ -57,9 +58,21 @@ def monkeypatch():
     auth_models.User.set_password = set_password
 
     def check_password(self, raw_password):
+        """
+        Check a raw PW against the DB.
+
+        Checks strong hashes, but falls back to built-in hashes as needed.
+        Supports automatic upgrading to stronger hashes.
+        """
         if self.password.startswith('bcrypt$'):
-            return bcrypt_auth.check_password(self.password, raw_password)
-        return check_password_old(self, raw_password)
+            matched = bcrypt_auth.check_password(self.password, raw_password)
+        else:
+            matched = check_password_old(self, raw_password)
+
+        # TODO update password hash in DB if matched and auto-upgrading is
+        # enabled.
+
+        return matched
     check_password_old = auth_models.User.check_password
     auth_models.User.check_password = check_password
 
