@@ -71,14 +71,14 @@ Transparent password rehashing
 ------------------------------
 In case you have existing users with weaker password hashes (like SHA-1) in
 the database, django\_sha2 will **automatically rehash** their password in the
-database with a stronger hash by default during their next login.
+database with a your currently chosen hash algorithm during their next login.
 
 This is enabled by default. If you don't like it, set this in your settings
 file:
 
     PWD_REHASH = False
 
-Similarly, django\_sha2 automatically updates user's password hashes to the
+Similarly, django\_sha2 automatically updates users' password hashes to the
 **latest HMAC key** on login, which is usually what you want, so it is enabled
 by default. To disable, set this setting:
 
