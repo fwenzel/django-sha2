@@ -64,13 +64,18 @@ def monkeypatch():
         Checks strong hashes, but falls back to built-in hashes as needed.
         Supports automatic upgrading to stronger hashes.
         """
-        if self.password.startswith('bcrypt$'):
-            matched = bcrypt_auth.check_password(self.password, raw_password)
+        hashed_with = self.password.split('$', 1)[0]
+        if hashed_with == 'bcrypt':
+            matched = bcrypt_auth.check_password(self, raw_password)
         else:
             matched = check_password_old(self, raw_password)
 
-        # TODO update password hash in DB if matched and auto-upgrading is
-        # enabled.
+        # Update password hash in DB if out-of-date hash algorithm is used and
+        # auto-upgrading is enabled.
+        if (matched and getattr(settings, 'PWD_REHASH', True) and
+            hashed_with != algo):
+            self.set_password(raw_password)
+            self.save()
 
         return matched
     check_password_old = auth_models.User.check_password

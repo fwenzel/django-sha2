@@ -22,9 +22,9 @@ def create_hash(userpwd):
         '$', latest_key_id))
 
 
-def check_password(db_entry, raw_pass):
+def check_password(user, raw_password):
     """Given a DB entry and a raw password, check its validity."""
-    algo_and_hash, key_ver = db_entry.rsplit('$', 1)
+    algo_and_hash, key_ver = user.password.rsplit('$', 1)
     try:
         shared_key = settings.HMAC_KEYS[key_ver]
     except KeyError:
@@ -32,8 +32,17 @@ def check_password(db_entry, raw_pass):
         return False
 
     bc_value = algo_and_hash[6:]  # Yes, bcrypt <3s the leading $.
-    hmac_value = _hmac_create(raw_pass, shared_key)
-    return _bcrypt_verify(hmac_value, bc_value)
+    hmac_value = _hmac_create(raw_password, shared_key)
+    matched = _bcrypt_verify(hmac_value, bc_value)
+
+    # Update password hash if HMAC key has since changed.
+    if matched and getattr(settings, 'PWD_HMAC_REKEY', True):
+        latest_key_id = max(settings.HMAC_KEYS.keys())
+        if key_ver != latest_key_id:
+            user.set_password(raw_password)
+            user.save()
+
+    return matched
 
 
 def _hmac_create(userpwd, shared_key):
