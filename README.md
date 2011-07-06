@@ -69,7 +69,7 @@ attacks.
 
 Transparent password rehashing
 ------------------------------
-In case you have existing users with weaker password hashes (like SHA-2) in
+In case you have existing users with weaker password hashes (like SHA-1) in
 the database, django\_sha2 will **automatically rehash** their password in the
 database with a stronger hash by default during their next login.
 
