@@ -83,6 +83,8 @@ def monkeypatch():
 
     def get_hexdigest(algorithm, salt, raw_password):
         """Generate SHA-256 or SHA-512 hash (not used for bcrypt)."""
+        salt, raw_password = map(lambda s: unicode(s).encode('utf-8'),
+                                 (salt, raw_password))
         if algorithm in ('sha256', 'sha512'):
             return getattr(hashlib, algorithm)(salt + raw_password).hexdigest()
         elif algorithm == 'sha512b64':
