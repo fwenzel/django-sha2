@@ -8,7 +8,6 @@ ever gets fixed, this can be removed.
 """
 import base64
 import hashlib
-import random
 import os
 
 from django.conf import settings
@@ -42,7 +41,6 @@ def monkeypatch():
     if algo == 'bcrypt':
         from django_sha2 import bcrypt_auth
 
-
     def set_password(self, raw_password):
         """Wrapper to set strongly hashed password for Django."""
         if raw_password is None:
@@ -65,7 +63,7 @@ def monkeypatch():
         Supports automatic upgrading to stronger hashes.
         """
         hashed_with = self.password.split('$', 1)[0]
-        if hashed_with == 'bcrypt':
+        if hashed_with in ['bcrypt', 'hh']:
             matched = bcrypt_auth.check_password(self, raw_password)
         else:
             matched = check_password_old(self, raw_password)
