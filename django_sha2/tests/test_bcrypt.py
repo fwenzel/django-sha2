@@ -3,6 +3,7 @@ from django import test
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.management import call_command
 
 from mock import patch
 from nose.tools import eq_
@@ -84,3 +85,31 @@ class BcryptTests(test.TestCase):
         # Log in again with the new hash.
         assert authenticate(username='john', password='123')
 
+    def test_management_command(self):
+        """Test password update flow via management command, from default
+        Django hashes, to hardened hashes, to bcrypt on log in."""
+
+        john = User.objects.get(username='john')
+        john.password = 'sha1$3356f$9fd40318e1de9ecd3ab3a5fe944ceaf6a2897eef'
+        john.save()
+
+        # The hash should be sha1 now.
+        john = User.objects.get(username='john')
+        eq_(john.password.split('$', 1)[0], 'sha1')
+
+        # Simulate calling management command
+        call_command('strengthen_user_passwords')
+
+        # The hash should be 'hh' now.
+        john = User.objects.get(username='john')
+        eq_(john.password.split('$', 1)[0], 'hh')
+
+        # Logging in will convert the hardened hash to bcrypt.
+        assert authenticate(username='john', password='123')
+
+        # Make sure the DB now has a bcrypt hash.
+        john = User.objects.get(username='john')
+        eq_(john.password.split('$', 1)[0], 'bcrypt')
+
+        # Log in again with the new hash.
+        assert authenticate(username='john', password='123')
