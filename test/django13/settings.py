@@ -1,10 +1,13 @@
 import os
+import sys
 
 ## Generic settings
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-path = lambda *a: os.path.join(ROOT, *a)
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+path = lambda *a: os.path.join(PROJECT_ROOT, *a)
+
+sys.path.insert(0, path('..', '..'))
 
 DATABASES = {
     'default': {

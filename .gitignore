@@ -3,3 +3,5 @@
 pip-log.txt
 .DS_Store
 *.egg-info
+.tox
+test.db
