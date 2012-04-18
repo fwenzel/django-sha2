@@ -1,7 +1,4 @@
 py-bcrypt==0.2
 
 ## Tests
-Django==1.3
--e git://github.com/jbalogh/django-nose.git@b130825#egg=django-nose
-fabric
-mock
+tox
