@@ -115,3 +115,35 @@ For the initial idea, read the [blog post][blog] about it.
 
 [blog]: http://fredericiana.com/2010/10/12/adding-support-for-stronger-password-hashes-to-django/
 
+Using django 1.4
+-------
+
+Django 1.4 allows us to create our own password hashers. Because of some of the
+design choices of django's model, we have to generate a hasher class for each
+of our HMAC_KEYS. Lucky for you, we have code to help you! Define
+BASE_PASSWORD_HASHERS for all hashers you might use to decrypt something in
+your database (i.e. if in the past you used SHA256, make sure its in this
+setting). Form there, if you follow the code below, all your passwords will
+automatically stay up to date with the latest algorthim/hmac_key.
+
+This is an example settings file snippet:
+
+```python
+HMAC_KEYS = {
+    '2010-06-01': 'OldSharedKey',
+    '2011-01-01': 'ThisisASharedKey',
+    '2010-01-01': 'EvenOlderSharedKey'
+}
+
+BASE_PASSWORD_HASHERS = (
+    'django_sha2.hashers.BcryptHMACCombinedPasswordVerifier',
+    'django_sha2.hashers.SHA512PasswordHasher',
+    'django_sha2.hashers.SHA256PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.UnsaltedMD5PasswordHasher',
+)
+
+from django_sha2 import get_password_hashers
+PASSWORD_HASHERS = get_password_hashers(BASE_PASSWORD_HASHERS, HMAC_KEYS)
+```
