@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 from django import test
-from django.contrib.auth.models import get_hexdigest
 
 from nose.tools import eq_
 
@@ -40,6 +39,12 @@ class Sha2Tests(test.TestCase):
 
     def test_hexdigest(self):
         """Test various password hashes."""
+
+        # The following import need to stay inside the function to make sure
+        # monkeypatching has happened. If moved to the top the test would fail
+        # because the function has been imported too early before monkeypatch.
+        from django.contrib.auth.models import get_hexdigest
+
         for algo, pws in self.HASHES.items():
             for pw, hashed in pws.items():
                 eq_(get_hexdigest(algo, self.SALT, pw), hashed)

@@ -13,6 +13,8 @@ import os
 from django.conf import settings
 from django.contrib.auth import models as auth_models
 
+from django_sha2 import get_dynamic_hasher_names
+
 
 ALGOS = (
     'bcrypt',
@@ -63,7 +65,8 @@ def monkeypatch():
         Supports automatic upgrading to stronger hashes.
         """
         hashed_with = self.password.split('$', 1)[0]
-        if hashed_with in ['bcrypt', 'hh']:
+        if hashed_with in ['bcrypt', 'hh'] or \
+           hashed_with in get_dynamic_hasher_names(settings.HMAC_KEYS):
             matched = bcrypt_auth.check_password(self, raw_password)
         else:
             matched = check_password_old(self, raw_password)
