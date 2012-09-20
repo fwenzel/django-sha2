@@ -58,7 +58,7 @@ def check_password(user, raw_password):
     except KeyError:
         log.info('Invalid shared key version "{0}"'.format(key_ver))
         return False
-    bc_value = algo_and_hash[6:]  # Yes, bcrypt <3s the leading $.
+    bc_value = algo_and_hash[algo_and_hash.find('$'):]  # Yes, bcrypt <3s the leading $.
     hmac_value = _hmac_create(raw_password, shared_key)
     matched = _bcrypt_verify(hmac_value, bc_value)
 
