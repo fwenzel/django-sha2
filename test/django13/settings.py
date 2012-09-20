@@ -26,7 +26,8 @@ INSTALLED_APPS = (
 ## django-sha2 settings
 PWD_ALGORITHM = 'bcrypt'
 HMAC_KEYS = {
-    '2011-01-01': 'ThisisASharedKey',
     '2010-06-01': 'OldSharedKey',
+    '2011-01-01': 'ThisisASharedKey',  # This is the most recent key
+    '2011-00-00': 'ThisKeyIsOldToo',
     '2010-01-01': 'EvenOlderSharedKey'
 }
